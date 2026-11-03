@@ -91,7 +91,12 @@ target_include_directories(MacMTPLibmtp
 target_compile_options(MacMTPLibmtp PRIVATE -Wall -Wmissing-prototypes)
 target_link_options(MacMTPLibmtp PRIVATE
   "LINKER:-exported_symbols_list,${MACMTP_LIBMTP_EXPORT_LIST}")
-find_library(MACMTP_ICONV_LIBRARY iconv REQUIRED)
+find_library(MACMTP_ICONV_LIBRARY iconv
+  PATHS "${CMAKE_OSX_SYSROOT}/usr/lib"
+  NO_DEFAULT_PATH)
+if(NOT MACMTP_ICONV_LIBRARY)
+  find_library(MACMTP_ICONV_LIBRARY iconv REQUIRED)
+endif()
 target_link_libraries(MacMTPLibmtp PRIVATE usb-1.0 "${MACMTP_ICONV_LIBRARY}")
 set_target_properties(MacMTPLibmtp PROPERTIES
   OUTPUT_NAME "mtp.9"
